@@ -1,0 +1,10 @@
+{
+  "awsConfig": {
+    "accessKey": "YOUR-AWS-AC",
+    "secretKey": "YOUR-AWS-SC"
+  },
+  "mongoDbConfig": {
+    "connectionString": "MONGODB-CONNECTION-STRING",
+    "database": "interviewer"
+  }
+}
