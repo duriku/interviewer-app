@@ -1,48 +1,32 @@
-import React, {useState} from 'react';
-import {createQuestion, updateQuestion} from "../service/question.service";
+import React from 'react';
 
-export function NewQuestion() {
-    const [title, setTitle] = useState("");
-    const [answer, setAnswer] = useState("");
-    const [tags, setTags] = useState("");
-    const [id, setId] = useState("");
-
-    const submitQuestion = async e => {
-        e.preventDefault();
-        if (id) {
-            await updateQuestion({title, answer, tags, questionId: id});
-        } else {
-            await createQuestion({title, answer, tags});
-        }
-
-        setTitle("");
-        setAnswer("");
-        setTags("");
-        setId("");
-    }
-
+export function NewQuestion({question, setQuestion, submitQuestion, newQuestion}) {
+    console.log("question");
+    console.log(question);
+    const {id, title, answer, tags} = question;
     return (<>
         <p>
             Add a new question
         </p>
+        <button type="button" onClick={newQuestion}>New Question</button>
         <div>
             Id:
             <input type="text"
                    value={id}
-                   onChange={e => setTitle(e.target.value)}/><br/><br/>
+                   onChange={e => setQuestion({...question, id: e.target.value})}/><br/><br/>
 
             Question:
             <input type="text"
                    value={title}
-                   onChange={e => setTitle(e.target.value)}/><br/><br/>
+                   onChange={e => setQuestion({...question, title: e.target.value})}/><br/><br/>
 
             Answer:
-            <textarea value={answer} onChange={e => setAnswer(e.target.value)}/><br/><br/>
+            <textarea value={answer} onChange={e => setQuestion({...question, answer: e.target.value})}/><br/><br/>
 
             Tags:
             <input type="text"
                    value={tags}
-                   onChange={e => setTags(e.target.value)}/>
+                   onChange={e => setQuestion({...question, tags: e.target.value})}/>
             <button type="button" onClick={submitQuestion}>Add Question</button>
         </div>
     </>);

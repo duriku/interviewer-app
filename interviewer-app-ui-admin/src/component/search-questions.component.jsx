@@ -1,39 +1,6 @@
-import React, {useEffect, useState} from 'react';
-import {loadQuestions, searchQuestions} from "../service/question.service";
-import {QuestionsList} from "./question-list.component";
+import React from 'react';
 
-export function SearchQuestions() {
-    const [data, setData] = useState({questions: []});
-    const [searchText, setSearchText] = useState("");
-
-    const search = async e => {
-        e.preventDefault();
-        const questions = await searchQuestions(searchText);
-        setData({questions});
-    }
-
-    const loadIndex = async e => {
-        e.preventDefault();
-        const questions = await loadQuestions(searchText);
-        setData({questions});
-    }
-
-    const editQuestion = async e => {
-        e.preventDefault();
-        console.log(`edit question ${e.target.id}`);
-    }
-
-    const deleteQuestion = async e => {
-        e.preventDefault();
-        console.log(`delete question`);
-    }
-
-    useEffect(() => {
-        searchQuestions("java")
-            .then(questions => setData({questions}));
-    }, []);
-
-
+export function SearchQuestions({data, searchText, searchTags, search, setSearchText, setSearchTags, editQuestion, deleteQuestion}) {
     let questions = null;
     if (data.questions && data.questions.length > 0) {
         questions = data.questions.map(({id, title, answer, tags}) =>
@@ -45,11 +12,25 @@ export function SearchQuestions() {
     }
 
     return (<>
-        <QuestionsList searchText={searchText}
-                       setSearchText={setSearchText}
-                       search={search}
-                       loadIndex={loadIndex}
-                       questions={questions}/>
+        <p>
+            Questions
+        </p>
+
+        <div>
+            Search Keyword
+            <input type="text"
+                   value={searchText}
+                   onChange={e => setSearchText(e.target.value)}/><br/>
+
+            Search Tags
+            <input type="text"
+                   value={searchTags}
+                   onChange={e => setSearchTags(e.target.value)}/><br/>
+            <button type="button" onClick={search}>Search</button>
+        </div>
+        <ul>
+            {questions}
+        </ul>
     </>);
 }
 

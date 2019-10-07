@@ -2,12 +2,22 @@ import axios from "axios";
 
 export const API_ROOT = 'https://dvpw083q5a.execute-api.eu-west-2.amazonaws.com/dev';
 
-export const searchQuestions = async (searchText) => {
-    return getQuestion({search: searchText});
+export const loadQuestions = async (searchText, searchTags) => {
+    return searchQuestions(searchText, searchTags, {loadIndex: true});
 }
 
-export const loadQuestions = async (searchText) => {
-    return getQuestion({search: searchText, loadIndex: true});
+export const searchQuestions = async (searchText, tags, inputPayload) => {
+    const payload = inputPayload || {};
+
+    if (tags) {
+        payload.tags = tags;
+    }
+
+    if (searchText) {
+        payload.search = searchText;
+    }
+
+    return getQuestion(payload);
 }
 
 export const reindexQuestions = async () => {
@@ -29,7 +39,7 @@ export const updateQuestion = async ({title, answer, tags, questionId}) => {
     return createOrUpdateQuestion({title, answer, tags, questionId}, 'UPDATE');
 }
 
-export const deleteQuestion = async (questionId) => {
+export const removeQuestion = async (questionId) => {
     const requestBody = {
         command: "DELETE",
         questionId
@@ -38,13 +48,14 @@ export const deleteQuestion = async (questionId) => {
 }
 
 const createOrUpdateQuestion = async ({title, answer, tags, questionId}, command) => {
+
     const requestBody = {
         command,
         question: {
-            questionId,
+            id: questionId,
             title,
             answer,
-            tags: tags.split(",")
+            tags: Array.isArray(tags) ? tags : tags.split(",")
         }
     }
 
@@ -55,7 +66,6 @@ const getQuestion = async (params, path) => {
     try {
         // TODO: construct queryString
         return (await axios.get(`${API_ROOT}/questions${path ? path : ''}`, {params})).data.body
-        // return (await axios(`${API_ROOT}/questions?search=${searchText}`)).data.body
     } catch (error) {
         console.error(error);
     }
