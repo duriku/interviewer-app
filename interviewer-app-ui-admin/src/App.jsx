@@ -1,84 +1,84 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
 import {SearchQuestions} from "./component/search-questions.component";
-import {NewQuestion} from "./component/new-question.component";
-import {SyncQuestion} from "./component/sync-questions.component";
-import {
-    createQuestion,
-    loadQuestions,
-    removeQuestion,
-    searchQuestions,
-    updateQuestion
-} from "./service/question.service";
+import {createQuestion, loadQuestions, searchQuestions, updateQuestion} from "./service/question.service";
 import {emptyQuestion} from "./constants";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
+import Button from "@material-ui/core/Button";
+import {NewQuestionDialog} from "./component/new-question-dialog.component";
 
 function App() {
-    const [data, setData] = useState({questions: []}); // TODO: rename
+    const [isDialogOpen, setDialogOpen] = useState(false); // TODO: rename
+    const [questions, setQuestions] = useState([]); // TODO: rename
     const [question, setQuestion] = useState(emptyQuestion);
     const [searchText, setSearchText] = useState("");
-    const [searchTags, setSearchTags] = useState("");
+    const [searchTags, setSearchTags] = useState([]);
     const {id, title, answer, tags} = question;
 
     const submitQuestion = async e => {
-        e.preventDefault();
+        console.log(question);
         if (id) {
             await updateQuestion({title, answer, tags, questionId: id});
         } else {
             await createQuestion({title, answer, tags});
         }
-
         setQuestion(emptyQuestion);
     }
 
     const loadIndex = async () => {
         const questions = await loadQuestions(searchText, searchTags);
-        setData({questions});
+        setQuestions(questions);
     };
 
-    const search = async e => {
-        e.preventDefault();
+    const search = async () => {
         const questions = await searchQuestions(searchText, searchTags);
-        setData({questions});
+        setQuestions(questions);
     }
 
-    const newQuestion = async e => {
-        e.preventDefault();
+    const newQuestion = async () => {
         setQuestion(emptyQuestion);
-    }
-
-    const editQuestion = async e => {
-        e.preventDefault();
-        setQuestion(data.questions.filter(q => q.id === e.target.id)[0]);
-    }
-
-    const deleteQuestion = async e => {
-        e.preventDefault();
-        await removeQuestion(e.target.id);
     }
 
     useEffect(() => {
         searchQuestions("java")
-            .then(questions => setData({questions}));
+            .then(questions => setQuestions(questions));
     }, []);
 
     return (<>
-            <header className="App-header">
-                <SyncQuestion loadIndex={loadIndex}/>
-                <NewQuestion
-                    newQuestion={newQuestion}
-                    question={question}
-                    setQuestion={setQuestion}
-                    submitQuestion={submitQuestion}
-                />
-                <SearchQuestions data={data}
-                                 deleteQuestion={deleteQuestion}
-                                 editQuestion={editQuestion}
-                                 search={search}
-                                 searchText={searchText}
-                                 searchTags={searchTags}
-                                 setSearchText={setSearchText}
-                                 setSearchTags={setSearchTags}/>
-            </header>
+            <React.Fragment>
+                <CssBaseline/>
+                <AppBar position="relative">
+                    <Toolbar>
+                        {/*<CameraIcon className={classes.icon}/> TODO: ADD A NICE ICON */}
+                        <Typography variant="h6" color="inherit" noWrap>
+                            Interviewer Admin UI
+                        </Typography>
+                    </Toolbar>
+                </AppBar>
+                <main>
+                    <SearchQuestions questions={questions}
+                                     setQuestion={setQuestion}
+                                     search={search}
+                                     searchText={searchText}
+                                     searchTags={searchTags}
+                                     setSearchText={setSearchText}
+                                     setSearchTags={setSearchTags}/>
+
+
+                    {/*<SyncQuestion loadIndex={loadIndex}/>*/}
+                    <Button color="primary" onClick={e => setDialogOpen(true)}>New Question</Button>
+                    <NewQuestionDialog
+                        isDialogOpen={isDialogOpen}
+                        setDialogOpen={setDialogOpen}
+                        question={question}
+                        setQuestion={setQuestion}
+                        submitQuestion={submitQuestion}
+                    />
+                </main>
+            </React.Fragment>
         </>
     );
 }

@@ -9,8 +9,8 @@ export const loadQuestions = async (searchText, searchTags) => {
 export const searchQuestions = async (searchText, tags, inputPayload) => {
     const payload = inputPayload || {};
 
-    if (tags) {
-        payload.tags = tags;
+    if (!!tags && tags.length > 0) {
+        payload.tags = tags.join(',');
     }
 
     if (searchText) {
