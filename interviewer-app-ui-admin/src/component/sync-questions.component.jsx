@@ -1,24 +1,31 @@
 import React from 'react';
-import {commitQuestions, reindexQuestions} from "../service/question.service";
+import {commitQuestionsAPI, reindexQuestionsAPI} from "../service/question.service";
+import {useDispatch, useSelector} from "react-redux";
+import {closeAllQuestions, openAllQuestions, searchQuestions} from "../features/search/search-result.slice";
+import Button from "@material-ui/core/Button";
+import {openNewQuestionDialog} from "../features/question/newQuestion.slice";
 
-export function SyncQuestion({loadIndex}) {
-    const reindex = async e => {
-        e.preventDefault();
-        await reindexQuestions();
-        loadIndex();
+export function SyncQuestion() {
+    const dispatch = useDispatch();
+    const {searchText, searchTags} = useSelector(state => state.search);
+
+    const reindex = async () => {
+        await reindexQuestionsAPI();
+        dispatch(searchQuestions(searchText, searchTags, {loadIndex: true}));
     }
 
-    const commitIndex = async e => {
-        e.preventDefault();
-        await commitQuestions();
-        loadIndex();
+    const commitIndex = async () => {
+        await commitQuestionsAPI();
+        dispatch(searchQuestions(searchText, searchTags, {loadIndex: true}));
     }
 
     return (<>
-        <button type="button" onClick={reindex}>Reindex</button>
         <br/>
-        <button type="button" onClick={commitIndex}>Commit (Upload Index)</button>
+        <Button color="primary" onClick={reindex}>Reindex</Button>
+        <Button color="primary" onClick={commitIndex}>Commit (Upload Index)</Button>
         <br/>
-        <br/>
+        <Button color="primary" onClick={() => dispatch(openNewQuestionDialog())}>New Question</Button>
+        <Button color="primary" onClick={() => dispatch(openAllQuestions())}>Open All Questions</Button>
+        <Button color="primary" onClick={() => dispatch(closeAllQuestions())}>Close ALl Questions</Button>
     </>);
 }

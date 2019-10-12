@@ -4,13 +4,21 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import ChipInput from "material-ui-chip-input";
 import {QuestionDetails} from "./question-details.component";
+import {useDispatch, useSelector} from "react-redux";
+import {searchQuestions} from "../features/search/search-result.slice";
+import {addSearchTag, changeSearchText, removeSearchTag} from "../features/search/search.slice";
 
-export function SearchQuestions({questions, setQuestion, searchText, searchTags, search, setSearchText, setSearchTags}) {
+export function SearchQuestions() {
+    const dispatch = useDispatch();
+
+    const questions = useSelector(state => state.searchResult.questions);
+    const {searchText, searchTags} = useSelector(state => state.search);
+
     const [tagInput, setTagInput] = useState("");
 
     const handleSearchKeyPress = e => {
         if (e.key === 'Enter') {
-            search();
+            dispatch(searchQuestions(searchText, searchTags));
         }
     }
 
@@ -19,8 +27,7 @@ export function SearchQuestions({questions, setQuestion, searchText, searchTags,
         questionDetailList = questions.map((question) =>
             <QuestionDetails
                 key={question.id}
-                question={question}
-                setQuestion={setQuestion}/>);
+                question={question}/>);
     }
 
     return (<>
@@ -33,7 +40,7 @@ export function SearchQuestions({questions, setQuestion, searchText, searchTags,
                 label="Search"
                 name="searchText"
                 value={searchText}
-                onChange={e => setSearchText(e.target.value)}
+                onChange={e => dispatch(changeSearchText(e.target.value))}
                 autoFocus
                 onKeyPress={handleSearchKeyPress}
             />
@@ -50,10 +57,10 @@ export function SearchQuestions({questions, setQuestion, searchText, searchTags,
                 inputValue={tagInput}
                 onChange={(e) => {
                     setTagInput('');
-                    setSearchTags([...searchTags, e[e.length - 1]]);
+                    dispatch(addSearchTag(e[e.length - 1]))
                 }}
                 onDelete={(e) => {
-                    setSearchTags(searchTags.filter(tag => e !== tag));
+                    dispatch(removeSearchTag(e))
                 }}
                 onUpdateInput={e => setTagInput(e.target.value.replace(' ', ''))}
             />
@@ -63,7 +70,7 @@ export function SearchQuestions({questions, setQuestion, searchText, searchTags,
                 fullWidth
                 variant="contained"
                 color="primary"
-                onClick={search}
+                onClick={() => dispatch(searchQuestions(searchText, searchTags))}
                 href="">Search</Button>
         </Container>
         {/*TODO: SPACE WITHBEEN THE SEARCH AND RESULT*/}

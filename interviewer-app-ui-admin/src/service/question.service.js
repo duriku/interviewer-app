@@ -2,11 +2,7 @@ import axios from "axios";
 
 export const API_ROOT = 'https://dvpw083q5a.execute-api.eu-west-2.amazonaws.com/dev';
 
-export const loadQuestions = async (searchText, searchTags) => {
-    return searchQuestions(searchText, searchTags, {loadIndex: true});
-}
-
-export const searchQuestions = async (searchText, tags, inputPayload) => {
+export const searchQuestionsAPI = async (searchText, tags, inputPayload, numberOfQuestionsToShow) => {
     const payload = inputPayload || {};
 
     if (!!tags && tags.length > 0) {
@@ -17,29 +13,30 @@ export const searchQuestions = async (searchText, tags, inputPayload) => {
         payload.search = searchText;
     }
 
+    payload.questionCount = numberOfQuestionsToShow;
     return getQuestion(payload);
 }
 
-export const reindexQuestions = async () => {
+export const reindexQuestionsAPI = async () => {
     return getQuestion(null, "/index");
 }
 
-export const commitQuestions = async () => {
+export const commitQuestionsAPI = async () => {
     const requestBody = {
         command: "UPLOAD_INDEX",
     }
     return postQuestion(requestBody);
 }
 
-export const createQuestion = async ({title, answer, tags}) => {
+export const createQuestionAPI = async ({title, answer, tags}) => {
     return createOrUpdateQuestion({title, answer, tags}, 'CREATE');
 }
 
-export const updateQuestion = async ({title, answer, tags, questionId}) => {
+export const updateQuestionAPI = async ({title, answer, tags, questionId}) => {
     return createOrUpdateQuestion({title, answer, tags, questionId}, 'UPDATE');
 }
 
-export const removeQuestion = async (questionId) => {
+export const removeQuestionAPI = async (questionId) => {
     const requestBody = {
         command: "DELETE",
         questionId
@@ -48,7 +45,6 @@ export const removeQuestion = async (questionId) => {
 }
 
 const createOrUpdateQuestion = async ({title, answer, tags, questionId}, command) => {
-
     const requestBody = {
         command,
         question: {
@@ -58,7 +54,6 @@ const createOrUpdateQuestion = async ({title, answer, tags, questionId}, command
             tags: Array.isArray(tags) ? tags : tags.split(",")
         }
     }
-
     return postQuestion(requestBody);
 }
 
@@ -79,5 +74,3 @@ const postQuestion = async requestBody => {
         throw new Error(error);
     }
 }
-
-
