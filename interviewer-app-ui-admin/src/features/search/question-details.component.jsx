@@ -9,7 +9,7 @@ import ExpansionPanelActions from "@material-ui/core/ExpansionPanelActions";
 import Button from "@material-ui/core/Button";
 import {useDispatch} from "react-redux";
 import {changeQuestionOpenness, searchQuestions} from "./search-result.slice";
-import {editQuestionDialog} from "../question/newQuestion.slice";
+import {editQuestionDialog, openDeleteQuestionDialog} from "../question/newQuestion.slice";
 import {deleteQuestion} from "../question/question.slice";
 
 export function QuestionDetails({question}) {
@@ -18,7 +18,11 @@ export function QuestionDetails({question}) {
     const {id, title, answer, tags, isOpen} = question;
 
     const editQuestion = async () => {
-        dispatch(editQuestionDialog(question))
+        dispatch(editQuestionDialog(question));
+    }
+
+    const deleteQuestion = async () => {
+        dispatch(openDeleteQuestionDialog(question));
     }
 
     return (
@@ -46,7 +50,7 @@ export function QuestionDetails({question}) {
 
                 <ExpansionPanelActions>
                     <Button size="small" color="primary" onClick={editQuestion}>Edit</Button>
-                    <Button size="small" color="secondary" onClick={() => dispatch(deleteQuestion(question.id))}>Delete</Button>
+                    <Button size="small" color="secondary" onClick={deleteQuestion}>Delete</Button>
                 </ExpansionPanelActions>
             </ExpansionPanel>
         </React.Fragment>

@@ -49,16 +49,13 @@ export function NewQuestionDialog() {
     };
 
     useEffect(() => {
-        if (isEditQuestionDialogOpenSelector) {
             setId(question.id);
             setTitle(question.title);
             setAnswer(question.answer);
             setTags(question.tags);
-        }
+    }, [question]);
 
-    }, [question, isNewQuestionDialogOpenSelector, isEditQuestionDialogOpenSelector]);
-
-    const getDialogTitle = () => !!isEditQuestionDialogOpen ? `Change (${title})?` : "Create a new Question";
+    const getDialogTitle = () => !!isEditQuestionDialogOpen ? `Change (${question.title})?` : "Create a new Question";
 
     return (<>
         <Dialog
