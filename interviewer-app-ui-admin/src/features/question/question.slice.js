@@ -31,7 +31,6 @@ export const {
 export default questionSlice.reducer;
 
 export const addNewQuestion = (question) => async dispatch => {
-    console.log('addNewQuestion ');
     try {
         await createQuestionAPI(question);
         dispatch(addNewQuestionSuccess());

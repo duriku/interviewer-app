@@ -8,9 +8,9 @@ import Divider from "@material-ui/core/Divider";
 import ExpansionPanelActions from "@material-ui/core/ExpansionPanelActions";
 import Button from "@material-ui/core/Button";
 import {useDispatch} from "react-redux";
-import {changeQuestionOpenness, searchQuestions} from "../features/search/search-result.slice";
-import {editQuestionDialog} from "../features/question/newQuestion.slice";
-import {deleteQuestion} from "../features/question/question.slice";
+import {changeQuestionOpenness, searchQuestions} from "./search-result.slice";
+import {editQuestionDialog} from "../question/newQuestion.slice";
+import {deleteQuestion} from "../question/question.slice";
 
 export function QuestionDetails({question}) {
     const dispatch = useDispatch();

@@ -37,7 +37,6 @@ const searchResultSlice = createSlice({
         },
 
         removeQuestionFromSearch(state, action) {
-            console.log("removeQuestionFromSearch " + action.payload);
             state.questions = state.questions.filter(question => question.id !== action.payload);
         },
 

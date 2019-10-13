@@ -1,9 +1,9 @@
 import React from 'react';
-import {commitQuestionsAPI, reindexQuestionsAPI} from "../service/question.service";
+import {commitQuestionsAPI, reindexQuestionsAPI} from "../../service/question.service";
 import {useDispatch, useSelector} from "react-redux";
-import {closeAllQuestions, openAllQuestions, searchQuestions} from "../features/search/search-result.slice";
+import {closeAllQuestions, openAllQuestions, searchQuestions} from "./search-result.slice";
 import Button from "@material-ui/core/Button";
-import {openNewQuestionDialog} from "../features/question/newQuestion.slice";
+import {openNewQuestionDialog} from "../question/newQuestion.slice";
 
 export function SyncQuestion() {
     const dispatch = useDispatch();

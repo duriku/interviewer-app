@@ -7,46 +7,58 @@ import TextField from "@material-ui/core/TextField";
 import ChipInput from "material-ui-chip-input";
 import DialogActions from "@material-ui/core/DialogActions";
 import Button from "@material-ui/core/Button";
-import {shallowEqual, useDispatch, useSelector} from "react-redux";
-import {addNewQuestion, updateQuestion} from "../features/question/question.slice";
-import {closeNewQuestionDialog} from "../features/question/newQuestion.slice";
+import {useDispatch, useSelector} from "react-redux";
+import {addNewQuestion, updateQuestion} from "./question.slice";
+import {closeNewQuestionDialog} from "./newQuestion.slice";
 import {createSelector} from 'reselect'
 
 
-const selectDialog = createSelector(state => state.newQuestion.isNewQuestionDialogOpen, dialog => dialog);
+const isNewQuestionDialogOpenSelector = createSelector(state => state.newQuestion.isNewQuestionDialogOpen, dialog => dialog);
+const isEditQuestionDialogOpenSelector = createSelector(state => state.newQuestion.isEditQuestionDialogOpen, dialog => dialog);
 const selectQuestion = createSelector(state => state.newQuestion.question, newQuestion => newQuestion);
 
 export function NewQuestionDialog() {
     const dispatch = useDispatch();
-    const isDialogOpen = useSelector(selectDialog, shallowEqual);
-    const question = useSelector(selectQuestion, shallowEqual);
+    const isNewQuestionDialogOpen = useSelector(isNewQuestionDialogOpenSelector);
+    const isEditQuestionDialogOpen = useSelector(isEditQuestionDialogOpenSelector);
+    const isDialogOpen = isNewQuestionDialogOpen || isEditQuestionDialogOpen;
+    const question = useSelector(selectQuestion);
 
     const [title, setTitle] = useState('');
     const [answer, setAnswer] = useState('');
     const [tags, setTags] = useState([]);
     const [tagInput, setTagInput] = useState('');
+    const [id, setId] = useState('');
 
     const closeDialogHandler = () => {
-        dispatch(closeNewQuestionDialog());
         setTagInput('');
+        setTitle('');
+        setAnswer('');
+        setTags([]);
+        setId('');
+        dispatch(closeNewQuestionDialog());
     };
 
     const submitDialogHandler = () => {
         closeDialogHandler();
-        if (!!question){
-            dispatch(updateQuestion({id: question.id, title, answer, tags}));
+        if (isEditQuestionDialogOpen) {
+            dispatch(updateQuestion({id, title, answer, tags}));
         } else {
-            dispatch(addNewQuestion());
+            dispatch(addNewQuestion({title, answer, tags}));
         }
     };
 
     useEffect(() => {
-        setTitle(question.title);
-        setAnswer(question.answer);
-        setTags(question.tags);
-    }, [question]);
+        if (isEditQuestionDialogOpenSelector) {
+            setId(question.id);
+            setTitle(question.title);
+            setAnswer(question.answer);
+            setTags(question.tags);
+        }
 
-    const getDialogTitle = () => question ? `Change (${question.title})?` : "Create a new Question";
+    }, [question, isNewQuestionDialogOpenSelector, isEditQuestionDialogOpenSelector]);
+
+    const getDialogTitle = () => !!isEditQuestionDialogOpen ? `Change (${title})?` : "Create a new Question";
 
     return (<>
         <Dialog

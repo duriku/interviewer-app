@@ -5,8 +5,8 @@ import Button from "@material-ui/core/Button";
 import ChipInput from "material-ui-chip-input";
 import {QuestionDetails} from "./question-details.component";
 import {useDispatch, useSelector} from "react-redux";
-import {searchQuestions} from "../features/search/search-result.slice";
-import {addSearchTag, changeSearchText, removeSearchTag} from "../features/search/search.slice";
+import {searchQuestions} from "./search-result.slice";
+import {addSearchTag, changeSearchText, removeSearchTag} from "./search.slice";
 
 export function SearchQuestions() {
     const dispatch = useDispatch();

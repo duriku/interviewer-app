@@ -3,11 +3,11 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
-import {SearchQuestions} from "../component/search-questions.component";
-import {SyncQuestion} from "../component/sync-questions.component";
+import {SearchQuestions} from "../features/search/search-questions.component";
+import {SyncQuestion} from "../features/search/sync-questions.component";
 import {searchQuestions} from "../features/search/search-result.slice";
 import {useDispatch} from "react-redux";
-import {NewQuestionDialog} from "../component/new-question-dialog.component";
+import {NewQuestionDialog} from "../features/question/new-question-dialog.component";
 
 function App() {
     const dispatch = useDispatch();
