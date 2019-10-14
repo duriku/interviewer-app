@@ -70,14 +70,14 @@ public class AssociationsFacetsExample {
 
     Document doc = new Document();
     // 3 occurrences for tag 'lucene'
-    doc.add(new IntAssociationFacetField(3, "tags", "lucene"));
+    doc.add(new IntAssociationFacetField(3, "tags", "lucene", "sss"));
     // 87% confidence level of genre 'computing'
     doc.add(new FloatAssociationFacetField(0.87f, "genre", "computing"));
     indexWriter.addDocument(config.build(taxoWriter, doc));
 
     doc = new Document();
     // 1 occurrence for tag 'lucene'
-    doc.add(new IntAssociationFacetField(1, "tags", "lucene"));
+    doc.add(new IntAssociationFacetField(1, "tags", "aaa", "solr", "lucene"));
     // 2 occurrence for tag 'solr'
     doc.add(new IntAssociationFacetField(2, "tags", "solr"));
     // 75% confidence level of genre 'computing'

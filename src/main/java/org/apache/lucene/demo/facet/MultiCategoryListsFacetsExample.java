@@ -20,14 +20,13 @@ package org.apache.lucene.demo.facet;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Objects;
+import java.util.stream.Stream;
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.facet.FacetField;
-import org.apache.lucene.facet.FacetResult;
-import org.apache.lucene.facet.Facets;
-import org.apache.lucene.facet.FacetsCollector;
-import org.apache.lucene.facet.FacetsConfig;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.TextField;
+import org.apache.lucene.facet.*;
 import org.apache.lucene.facet.taxonomy.FastTaxonomyFacetCounts;
 import org.apache.lucene.facet.taxonomy.TaxonomyReader;
 import org.apache.lucene.facet.taxonomy.directory.DirectoryTaxonomyReader;
@@ -36,8 +35,11 @@ import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.IndexWriterConfig.OpenMode;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.MatchAllDocsQuery;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.ByteBuffersDirectory;
 import org.apache.lucene.store.Directory;
 
@@ -66,26 +68,31 @@ public class MultiCategoryListsFacetsExample {
     Document doc = new Document();
     doc.add(new FacetField("Author", "Bob"));
     doc.add(new FacetField("Publish Date", "2010", "10", "15"));
+    doc.add(new TextField("title", "kutya", Field.Store.YES));
     indexWriter.addDocument(config.build(taxoWriter, doc));
 
     doc = new Document();
     doc.add(new FacetField("Author", "Lisa"));
     doc.add(new FacetField("Publish Date", "2010", "10", "20"));
+    doc.add(new TextField("title", "kutya", Field.Store.YES));
     indexWriter.addDocument(config.build(taxoWriter, doc));
 
     doc = new Document();
     doc.add(new FacetField("Author", "Lisa"));
     doc.add(new FacetField("Publish Date", "2012", "1", "1"));
+    doc.add(new TextField("title", "kutya", Field.Store.YES));
     indexWriter.addDocument(config.build(taxoWriter, doc));
 
     doc = new Document();
     doc.add(new FacetField("Author", "Susan"));
     doc.add(new FacetField("Publish Date", "2012", "1", "7"));
+    doc.add(new TextField("title", "kutya", Field.Store.YES));
     indexWriter.addDocument(config.build(taxoWriter, doc));
 
     doc = new Document();
     doc.add(new FacetField("Author", "Frank"));
     doc.add(new FacetField("Publish Date", "1999", "5", "5"));
+    doc.add(new TextField("title", "eger", Field.Store.YES));
     indexWriter.addDocument(config.build(taxoWriter, doc));
 
     indexWriter.close();
@@ -103,7 +110,24 @@ public class MultiCategoryListsFacetsExample {
     // MatchAllDocsQuery is for "browsing" (counts facets
     // for all non-deleted docs in the index); normally
     // you'd use a "normal" query:
-    FacetsCollector.search(searcher, new MatchAllDocsQuery(), 10, fc);
+
+    // TODO: CHECK OUT GROUPING
+    // https://github.com/smartan/lucene/blob/f2e782a30fa8b466fab0926903e90f79a4177a3e/src/test/java/org/apache/lucene/search/grouping/TestGrouping.java
+
+
+    // TODO: Pagination
+    final Query titleQuery = new TermQuery(new Term("title", "kutya"));
+    final TopDocs topDocs = FacetsCollector.search(searcher, titleQuery, 1, fc);
+    System.out.println(topDocs.totalHits);
+    Stream.of(topDocs.scoreDocs).map(e -> {
+      try {
+        return searcher.doc(e.doc);
+      } catch (IOException ex) {
+        ex.printStackTrace();
+      }
+      return null;
+    }).filter(Objects::nonNull).forEach(System.out::println);
+//    FacetsCollector.search(searcher, new MatchAllDocsQuery(), 10, fc);
 
     // Retrieve results
     List<FacetResult> results = new ArrayList<>();
