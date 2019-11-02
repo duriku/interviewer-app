@@ -75,7 +75,7 @@ export function SearchQuestions() {
         </Container>
         {/*TODO: SPACE WITHBEEN THE SEARCH AND RESULT*/}
         <br/><br/><br/>
-        {questionDetailList && <Container maxWidth="sm">
+        {questionDetailList && <Container maxWidth="xl">
             {questionDetailList}
         </Container>}
     </>);

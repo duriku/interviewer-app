@@ -11,6 +11,8 @@ import {useDispatch} from "react-redux";
 import {changeQuestionOpenness, searchQuestions} from "./search-result.slice";
 import {editQuestionDialog, openDeleteQuestionDialog} from "../question/newQuestion.slice";
 import {deleteQuestion} from "../question/question.slice";
+import ReactMarkdown from "react-markdown";
+import {CodeBlock} from "../play/code-block.component";
 
 export function QuestionDetails({question}) {
     const dispatch = useDispatch();
@@ -41,7 +43,8 @@ export function QuestionDetails({question}) {
                 <ExpansionPanelDetails>
                     <div>
                         <Typography>
-                            {answer}
+                            <ReactMarkdown source={answer}
+                                           renderers={{ code: CodeBlock }}/>
                         </Typography>
                         {/*TODO: DISPLAY TAGS*/}
                     </div>
@@ -53,6 +56,8 @@ export function QuestionDetails({question}) {
                     <Button size="small" color="secondary" onClick={deleteQuestion}>Delete</Button>
                 </ExpansionPanelActions>
             </ExpansionPanel>
+            {/*<ReactMarkdown source={answer}*/}
+            {/*               renderers={{ code: CodeBlock }}/>*/}
         </React.Fragment>
     );
 }

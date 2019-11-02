@@ -27,6 +27,7 @@ import SystemUpdateAltOutlinedIcon from '@material-ui/icons/SystemUpdateAltOutli
 import CloudUploadOutlinedIcon from '@material-ui/icons/CloudUploadOutlined';
 import MenuOpenOutlinedIcon from '@material-ui/icons/MenuOpenOutlined';
 import ShortTextOutlinedIcon from '@material-ui/icons/ShortTextOutlined';
+import {MarkdownText} from "../features/play/markdown-text.component";
 
 const drawerWidth = 280;
 const useStyles = makeStyles(theme => ({
