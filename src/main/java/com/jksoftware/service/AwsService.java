@@ -7,25 +7,22 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
-import com.jksoftware.handler.BaseHandler;
-import com.jksoftware.model.AwsConfig;
-import org.apache.log4j.Logger;
-
-import java.io.File;
-
 import static com.jksoftware.config.InterviewerConfig.AWS_REGION;
 import static com.jksoftware.config.InterviewerConfig.CONFIG;
 import static com.jksoftware.config.InterviewerConfig.LAMBDA_INDEX_FOLDER;
 import static com.jksoftware.config.InterviewerConfig.S3_BUCKET;
 import static com.jksoftware.config.InterviewerConfig.S3_INDEX_FOLDER;
 import static com.jksoftware.config.InterviewerConfig.S3_ZIP_FILE_PATH;
+import com.jksoftware.model.AwsConfig;
 import static com.jksoftware.util.FileUtil.unZipDirectory;
 import static com.jksoftware.util.FileUtil.zipDirectory;
+import java.io.File;
 import static java.text.MessageFormat.format;
 import static org.apache.commons.io.FileUtils.copyInputStreamToFile;
+import org.apache.log4j.Logger;
 
 public class AwsService {
-    private static final Logger LOG = Logger.getLogger(BaseHandler.class);
+    private static final Logger LOG = Logger.getLogger(AwsService.class);
 
     private static final AwsService INSTANCE = new AwsService();
     private final AmazonS3 s3Client;
